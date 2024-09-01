@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robot Eye Follow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<style>
+
+body {
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.eyes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.eye {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Outer shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pupil {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #000;
+  position: absolute;
+  transition: transform 0.1s ease-out;
+  box-shadow: inset -3px -3px 5px rgba(0, 0, 0, 0.5), inset 3px 3px 8px rgba(255, 255, 255, 0.3);
+  background: radial-gradient(circle at 30% 30%, #333, #000);
+}
+
+/* Popping effect when mouse is near */
+.eye:hover {
+  transform: scale(1.1); /* Slightly enlarge the eye */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* Increase shadow depth */
+}
+
+
+</style>
+<body>
+  <div class="eyes">
+    <div class="eye">
+      <div class="pupil"></div>
+    </div>
+    <div class="eye">
+      <div class="pupil"></div>
+    </div>
+  </div>
+
+  <script>
+    // Get both pupils
+    const pupils = document.querySelectorAll(".pupil");
+
+    window.addEventListener("mousemove", (e) => {
+      pupils.forEach((pupil) => {
+        // Get the bounding rectangle of the eye
+        const eyeRect = pupil.parentElement.getBoundingClientRect();
+        
+        // Calculate the center of the eye
+        const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+        const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+        
+        // Calculate the angle to move the pupil
+        const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+        
+        // Set the maximum pupil movement inside the eye
+        const maxPupilMove = (eyeRect.width / 2) - (pupil.offsetWidth / 2);
+
+        // Calculate the new position of the pupil
+        const pupilX = Math.cos(angle) * maxPupilMove;
+        const pupilY = Math.sin(angle) * maxPupilMove;
+
+        // Move the pupil
+        pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+      });
+    });
+  </script>
+</body>
+</html>
